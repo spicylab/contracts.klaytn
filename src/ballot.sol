@@ -62,12 +62,15 @@ contract Ballot is owned {
 
         // if already placed a vote
         if (voter.mobVoteHistory[vid].strength != 0) {
-            q.strength[voter.mobVoteHistory[vid].strength] -= 1;
-            q.rewards[voter.mobVoteHistory[vid].rewards] -= 1;
+            q.strength[voter.mobVoteHistory[vid].strength + 1] -= 1;
+            q.rewards[voter.mobVoteHistory[vid].rewards + 1] -= 1;
         }
 
         q.strength[strength + 1] += 1;
         q.rewards[rewards + 1] += 1;
+        
+        voter.mobVoteHistory[vid].strength = strength;
+        voter.mobVoteHistory[vid].rewards = rewards;
     }
     function voteItem(string memory vid, uint8 strength) public {
         if (strength > 12) return;
@@ -77,10 +80,12 @@ contract Ballot is owned {
 
         // if already placed a vote
         if (voter.itemVoteHistory[vid].strength != 0) {
-            q.strength[voter.itemVoteHistory[vid].strength] -= 1;
+            q.strength[voter.itemVoteHistory[vid].strength + 1] -= 1;
         }
 
         q.strength[strength + 1] += 1;
+        
+        voter.itemVoteHistory[vid].strength = strength;
     }
 
     function getTotalVotesMob(string memory vid) public view returns (uint256 voteCount) {
